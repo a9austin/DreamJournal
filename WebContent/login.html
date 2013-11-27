@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>  
+<title>Log In</title>
+
+<script>
+function logIn(text, pw) {
+	$.get('LogIn', {name : text, password : pw}, errorCheck);
+}
+
+function errorCheck(login_package) {
+	var error = login_package.loginError;
+	if (error != "") {
+		var html = "<p><font class='text' color='red'>" + error + "</font></p>";
+		document.getElementById('loginerror').innerHTML  = html;
+	} else {
+		window.location.href = 'index.html'; 
+	}
+}
+</script>
+
+</head>
+<body>
+
+<ul id="nav">
+<li><a class="home" href="index.html">Dream Diary</a></li>
+<li><a href="register.html">Register</a></li>
+</ul>
+
+<p class="text">
+User Name: <input class='textbox' type='text' id='logintext'>
+<br>
+Password: <input class='textbox' type='password' id='loginpw'>
+<br>
+<br>
+<input type='button' id='loginbutton' value='Log In' onclick='logIn(logintext.value, loginpw.value);'></p>
+
+<p class="text">
+<span id='loginerror'>
+</span>
+</p>
+
+</body>
+</html>

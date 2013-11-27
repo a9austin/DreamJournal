@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>  
+<title>Dream Diary</title>
+
+<script>
+var dream_ids = null;
+var dream_titles = null;
+var user_id = null;
+var user_message = null;
+var number_of_dreams = 0;
+
+function loadPage() {
+	$.get('LoadDreams', {searchRequest : "nosearch"}, getDreams);
+}
+
+function getDreams(dream_package) {
+	dream_ids = dream_package.dreamIDs;
+	dream_titles = dream_package.dreamTitles;
+	setTimeout("displayLogIn()", 200);
+	//displayLogIn();
+}
+
+function displayLogIn() {
+	//alert('Got in display Login');
+	$.get('GetLogIn', showLogIn);
+}
+
+function showLogIn(get_login_package) {
+	var html = "";
+	var link_html = "";
+	user_id = get_login_package.userID;
+	user_message = get_login_package.userMessage;
+	
+	if (user_message == "" || user_message == null) {
+		link_html = "<li><a href='login.html'>Log In</a></li>";
+		link_html += "<li><a href='register.html'>Register</a></li>";
+	} else {
+		link_html += "<li><a href='MyDreamsServlet'>My Dreams</a></li>";
+		link_html += "<li><a href=NewDreamServlet>New Dream</a></li>";
+		link_html += "<li><a href='LogOut'>Log Out</a></li>";
+	}
+	
+	//document.getElementById('logininfoslot').innerHTML = html;
+	document.getElementById('loginlinkslot').innerHTML = link_html;
+	
+	getTenDreams();
+}
+
+function logout() {
+	$.get('LogOut', loadPage);
+}
+
+function getTenDreams() {
+	var html = "<p class='dream'>Latest Dreams:</p>";
+	number_of_dreams = dream_ids.length;
+	if (number_of_dreams > 0) {
+		if (number_of_dreams <= 10) {
+			for (var i = 0; i < number_of_dreams; i++) {
+				html += "<p><a href=DreamServlet?dreamID=";
+				html += dream_ids[i];
+				html += ">";
+				html += dream_titles[i];
+				html += "</a></p>";
+			}
+		} else {
+			for (var i = number_of_dreams - 10; i < number_of_dreams; i++) {
+				html += "<p><a href='DreamServlet?dreamID=";
+				html += dream_ids[i];
+				html += ">";
+				html += dream_titles[i];
+				html += "</a></p>";
+			}
+		}
+	}
+	document.getElementById('dreamtableslot').innerHTML = html;
+}
+
+function loadDream(page) {
+	$.get('DreamServlet', {dreamID : page});
+}
+
+function searchDreams(text) {
+	$.get('LoadDreams', {searchRequest : "search", searchTerm : text.value}, getDreams);
+}
+</script>
+</head>
+<body onload="loadPage();">
+
+<ul id="nav">
+<li><a class="home" href="index.html">Dream Diary</a></li>
+<li id='loginlinkslot'></li>
+</ul>
+
+<span id='logininfoslot'>
+</span>
+
+<p class="text">Search:
+<input class="textbox" type='text' id='searchbox' onkeyup='searchDreams(this)'></p>
+
+<span class="table" id="dreamtableslot"></span>
+
+</body>
+</html>
+

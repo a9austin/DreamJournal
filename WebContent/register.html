@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>  
+<title>New User</title>
+
+<script>
+function register(name, user_name, password, password_2) {
+	var html = "";
+	if (name == "" || user_name == "" || password == "" || password_2 == "") {
+		html += "<p>Please fill in all fields.</p>";
+		document.getElementById('registererror').innerHTML = html;
+	} else if (password != password_2) {
+		html += "<p>Passwords do not match</p>";
+		document.getElementById('registererror').innerHTML = html;
+	} else {
+		$.get('Register', {realName : name, userName : user_name, pw : password}, errorCheck);
+	}
+}
+
+function errorCheck(register_package) {
+	var error = register_package.registerError;
+	if (error != "") {
+		var html = "<p><font color='red'>" + error + "</font></p>";
+		document.getElementById('registererror').innerHTML  = html;
+	} else {
+		window.location.href = 'index.html'; 
+	}
+}
+</script>
+
+</head>
+<body>
+
+<ul id="nav">
+<li><a class="home" href="index.html">Dream Diary</a></li>
+<li><a href="login.html">Log In</a></li>
+</ul>
+
+<p class="text">
+Enter your real name: <input class='textbox' type='text' id='registername'>
+<br>
+Enter a user name: <input class='textbox' type='text' id='registerusername'>
+<br>
+Enter a password: <input class='textbox' type='password' id='registerpw'>
+<br>
+Enter your password again: <input class='textbox' type='password' id='registerpw2'>
+<br>
+<br>
+<input type='button' id='registerbutton' value='Register' onclick='register(registername.value, registerusername.value, registerpw.value, registerpw2.value);'></p>
+
+<p class='text'>
+<span id='registererror'>
+</span>
+</p>
+
+</body>
+</html>
